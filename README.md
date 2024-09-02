@@ -12,9 +12,13 @@ The following files are part of this project:
 
 ```text
 {{ $htmlTable := .Inner | markdownify }}
+{{ $table_class := .Get "table_class" }}
+{{ $new_table_tag := printf "<table class=\"%s\">" $table_class }}
+{{ $htmlTable = replace $htmlTable "<table>" $new_table_tag }}
 <div class="table">
 {{ $htmlTable | safeHTML }}
 </div>
+
 ```
 
 ### content/md/_index.md
@@ -30,11 +34,11 @@ draft = false
 
 # Markdown Example
 
-{{% mbtable %}}
+{{< mbtable table_class="table-info" >}}
 | foo | bar |
 | --- | --- |
 | baz | bim |
-{{% /mbtable %}}
+{{< /mbtable >}}
 ```
 
 ## How to reproduce the issue
@@ -55,22 +59,28 @@ I expected the following output:
 </head>
 <body>
   <main class="container"><h1 id="markdown-example">Markdown Example</h1>
+
+
+
+
 <div class="table">
-<table>
-  <thead>
-      <tr>
-          <th style="text-align: left">foo</th>
-          <th style="text-align: left">bar</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td style="text-align: left">baz</td>
-          <td style="text-align: left">bim</td>
-      </tr>
-  </tbody>
+<table class="table-info">
+<thead>
+<tr>
+<th>foo</th>
+<th>bar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baz</td>
+<td>bim</td>
+</tr>
+</tbody>
 </table>
+
 </div>
+
 
 
   </main>
@@ -89,6 +99,10 @@ Unfortunately, I got the following result:
 </head>
 <body>
   <main class="container"><h1 id="markdown-example">Markdown Example</h1>
+
+
+
+
 <div class="table">
 | foo | bar |
 | --- | --- |
@@ -96,10 +110,10 @@ Unfortunately, I got the following result:
 </div>
 
 
+
   </main>
 </body>
 </html>
-
 ```
 
 ## Guessed Root Cause
