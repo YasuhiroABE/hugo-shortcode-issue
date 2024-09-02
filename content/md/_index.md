@@ -6,9 +6,9 @@ draft = false
 
 # Markdown Example
 
-{{% mbtable %}}
+{{< mbtable table_class="table-info" >}}
 | foo | bar |
 | --- | --- |
 | baz | bim |
-{{% /mbtable %}}
+{{< /mbtable >}}
 
