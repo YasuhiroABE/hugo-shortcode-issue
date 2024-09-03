@@ -1,11 +1,17 @@
 ---
 title: "Top"
-date: 2024-09-02T21:12:01+09:00
+date: 2024-09-03T09:59:33+09:00
 draft: false
 ---
 
-# Section
+# Shortcode in Markdown
 
-text...
+{{< mbtable table_class="table-info" >}}
+| foo | bar |
+| --- | --- |
+| baz | bim |
+{{< /mbtable >}}
+
+
 
 
