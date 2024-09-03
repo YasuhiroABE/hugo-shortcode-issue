@@ -1,7 +1,7 @@
-{{ $htmlTable := .Inner | markdownify }}
-{{ $table_class := .Get "table_class" }}
-{{ $new_table_tag := printf "<table class=\"%s\">" $table_class }}
-{{ $htmlTable = replace $htmlTable "<table>" $new_table_tag }}
+{{- $htmlTable := .Inner | markdownify -}}
+{{- $table_class := .Get "table_class" -}}
+{{- $new_table_tag := printf "<table class=\"%s\">" $table_class -}}
+{{- $htmlTable = replace $htmlTable "<table>" $new_table_tag -}}
 <div class="table">
 {{ $htmlTable | safeHTML }}
 </div>

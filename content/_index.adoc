@@ -4,14 +4,11 @@ date: 2024-09-03T09:59:33+09:00
 draft: false
 ---
 
-# Shortcode in Markdown
+= Shortcode in Markdown
 
 {{< mbtable table_class="table-info" >}}
 | foo | bar |
 | --- | --- |
 | baz | bim |
 {{< /mbtable >}}
-
-
-
 
