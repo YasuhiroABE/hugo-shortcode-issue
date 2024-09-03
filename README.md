@@ -1,14 +1,20 @@
 # hugo-shortcode-issue
 
-## Purpose
+## Purpose of this repository
 
 This project was created to reproduce a shortcode issue I encountered with Hugo.
+
+## Issue
+
+The "markdownify" function calls in the asciidoctor as a rendering engine under the specific condition.
 
 ## Files
 
 The following files are part of this project:
 
 ### layouts/shortcodes/mbtable.html
+
+This shortcode needs the "| markdownify" part because I want to handle the HTML code.
 
 ```text
 {{ $htmlTable := .Inner | markdownify }}
@@ -18,8 +24,11 @@ The following files are part of this project:
 <div class="table">
 {{ $htmlTable | safeHTML }}
 </div>
-
 ```
+
+* Reference: [https://www.mybluelinux.com/how-create-bootstrap-tables-in-hugo/](https://www.mybluelinux.com/how-create-bootstrap-tables-in-hugo/)
+
+If you just want to use a table without such an inner decoration, remove the "| markdownify" part from the shortcode and use the "{{% %}}" format. In this case, the table will be described based on the parent document format, such as markdown and asciidoc.
 
 ### content/md/_index.md
 
@@ -39,30 +48,24 @@ draft = false
 | --- | --- |
 | baz | bim |
 {{< /mbtable >}}
-```
 
-## How to reproduce the issue
+# Asciidoctor Table
 
-```sh
-$ hugo
-$ cat public/md/index.html
+{{< mbtable table_class="table-info" >}}
+|===
+| foo | bar
+
+| baz
+| bim
+| ===
+{{< /mbtable >}}
 ```
 
 ### Expected Output
 
-I expected the following output:
+I expected the following output in the public/md/index.html file:
 
 ```html
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-  <main class="container"><h1 id="markdown-example">Markdown Example</h1>
-
-
-
-
 <div class="table">
 <table class="table-info">
 <thead>
@@ -78,42 +81,48 @@ I expected the following output:
 </tr>
 </tbody>
 </table>
-
 </div>
 
-
-
-  </main>
-</body>
-</html>
+<div class="table">
+<p>|===
+| foo | bar</p>
+<p>| baz
+| bim
+| ===</p>
+</div>
 ```
 
 ### Actual (issued) Output
 
-Unfortunately, I got the following result:
+I got the following result:
 
 ```html
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-  <main class="container"><h1 id="markdown-example">Markdown Example</h1>
-
-
-
-
 <div class="table">
 | foo | bar |
 | --- | --- |
 | baz | bim |
 </div>
 
-
-
-  </main>
-</body>
-</html>
+<div class="table">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;"/>
+<col style="width: 50%;"/>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">foo</th>
+<th class="tableblock halign-left valign-top">bar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">baz</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bim</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 ```
 
 ## Guessed Root Cause
@@ -164,3 +173,27 @@ index 843351702..d0699051b 100644
 
 This patch resolves the issue.
 
+## Shortcode with Asciidoc
+
+The content/_index.adoc file contains a shortcode in markdown format.
+
+After processing the file with the patched version of the hugo command, I got the expected otuput as follows.
+
+```html
+<div class="table">
+<table class="table-info">
+  <thead>
+      <tr>
+          <th style="text-align: left">foo</th>
+          <th style="text-align: left">bar</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">baz</td>
+          <td style="text-align: left">bim</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+```
